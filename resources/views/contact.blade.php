@@ -22,333 +22,132 @@
     </head>
     <body>
        <x-Navbar />
-       {{-- Banbury Madni Masjid — Donation Cards Section --}}
-{{-- Save as: resources/views/components/donation-cards.blade.php --}}
-{{-- Usage: <x-donation-cards /> or @include('components.donation-cards') --}}
+       
 
-<section class="bg-gray-100 py-14 px-4">
+       {{-- Banbury Madni Masjid — Contact Form Component --}}
+{{-- Save as: resources/views/components/contact-form.blade.php --}}
+{{-- Usage: <x-contact-form /> or @include('components.contact-form') --}}
 
-    {{-- Header --}}
-    <div class="text-center mb-10">
-        {{-- Mosque Logo --}}
-        <div class="flex justify-center mb-3">
-            <svg class="w-14 h-14 text-blue-700" viewBox="0 0 60 60" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M30 2 C30 2 26 8 26 12 C26 14.2 27.8 16 30 16 C32.2 16 34 14.2 34 12 C34 8 30 2 30 2Z"/>
-                <rect x="27" y="16" width="6" height="4" rx="1"/>
-                <path d="M10 32 C10 24 18 20 30 20 C42 20 50 24 50 32"/>
-                <rect x="6" y="32" width="48" height="4" rx="2"/>
-                <rect x="10" y="36" width="8" height="16" rx="1"/>
-                <rect x="26" y="36" width="8" height="20" rx="1"/>
-                <rect x="42" y="36" width="8" height="16" rx="1"/>
-                <rect x="4" y="52" width="52" height="4" rx="2"/>
-                <rect x="2" y="56" width="56" height="4" rx="2"/>
-                <text x="30" y="13" text-anchor="middle" font-size="5" fill="white" font-weight="bold">BANBURY</text>
-            </svg>
-        </div>
-        <div class="text-xs font-bold tracking-[0.25em] uppercase text-blue-700 mb-1">Banbury Madni Masjid</div>
-        <h2 class="text-4xl font-serif text-slate-800 mt-2">Join Us in Making a Difference</h2>
-    </div>
+<section class="bg-yellow-50 border border-yellow-100 rounded-2xl p-8 max-w-5xl mx-auto my-10 shadow-sm">
 
-    {{-- Cards Grid --}}
-    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+    {{-- Heading --}}
+    <p class="text-slate-700 text-base mb-6">
+        Have questions or want to chat?
+        <a href="#contact-form" class="text-teal-600 font-medium underline underline-offset-4 decoration-teal-500 hover:text-teal-700 transition-colors">
+            Fill out our contact form.
+        </a>
+    </p>
 
-        {{-- 
-            CARD DATA — Edit or loop from controller/model as needed.
-            Each card has: region, image, title, amount, donate_url
-        --}}
+    {{-- Form --}}
+    <form
+        id="contact-form"
+        action="{{ route('contact.send') }}"
+        method="POST"
+        class="space-y-4"
+    >
+        @csrf
 
-        @php
-        $appeals = [
-            [
-                'region'      => 'Pakistan',
-                'region_color'=> 'bg-blue-500',
-                'image'       => asset('images/appeals/food-pack.jpg'),    // replace with your image path
-                'alt'         => 'Ramadan Food Pack bags',
-                'title'       => 'Ramadan Food Pack',
-                'amount'      => '£50.00',
-                'amount_type' => 'fixed',   // 'fixed' or 'any'
-                'donate_url'  => '/donate/food-pack',
-            ],
-            [
-                'region'      => 'Asia – Africa',
-                'region_color'=> 'bg-blue-500',
-                'image'       => asset('images/appeals/zakat.jpg'),         // replace with your image path
-                'alt'         => 'UK Zakat Distribution',
-                'title'       => 'UK Zakat Distribution',
-                'amount'      => 'Any Amount',
-                'amount_type' => 'any',
-                'donate_url'  => '/donate/zakat',
-            ],
-            [
-                'region'      => 'United Kingdom',
-                'region_color'=> 'bg-blue-500',
-                'image'       => asset('images/appeals/legacy.jpg'),        // replace with your image path
-                'alt'         => 'Legacy For The Future New Build',
-                'title'       => 'Legacy For The Future (New Build/Land)',
-                'amount'      => '£500.00',
-                'amount_type' => 'fixed',
-                'donate_url'  => '/donate/legacy',
-            ],
-        ];
-        @endphp
-
-        @foreach($appeals as $appeal)
-        <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col">
-
-            {{-- Image with region badge --}}
-            <div class="relative">
-                <img
-                    src="{{ $appeal['image'] }}"
-                    alt="{{ $appeal['alt'] }}"
-                    class="w-full h-48 object-cover"
-                    onerror="this.onerror=null;this.src='https://placehold.co/400x200/1e3a5f/white?text={{ urlencode($appeal['title']) }}';"
+        {{-- Row 1: Name + Email --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    placeholder="Complete Name"
+                    value="{{ old('name') }}"
+                    class="w-full bg-white border border-gray-200 rounded-md px-4 py-3 text-sm text-slate-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('name') border-red-400 @enderror"
+                    required
                 />
-                {{-- Region Badge --}}
-                <span class="absolute top-3 left-3 {{ $appeal['region_color'] }} text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
-                    {{ $appeal['region'] }}
-                </span>
+                @error('name')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
-
-            {{-- Card Body --}}
-            <div class="flex flex-col items-center text-center px-5 py-5 flex-1">
-                <h3 class="text-slate-800 font-bold text-base mb-2 leading-snug">
-                    {{ $appeal['title'] }}
-                </h3>
-
-                <p class="text-blue-600 font-semibold text-base mb-5">
-                    {{ $appeal['amount'] }}
-                </p>
-
-                <a href="{{ $appeal['donate_url'] }}"
-                   class="mt-auto w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm py-3 rounded-lg transition-colors duration-200 text-center block">
-                    Donate Now
-                </a>
+            <div>
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="Email Address"
+                    value="{{ old('email') }}"
+                    class="w-full bg-white border border-gray-200 rounded-md px-4 py-3 text-sm text-slate-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('email') border-red-400 @enderror"
+                    required
+                />
+                @error('email')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
-
         </div>
-        @endforeach
 
-    </div>
+        {{-- Row 2: Phone + Subject --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <input
+                    type="tel"
+                    name="phone"
+                    id="phone"
+                    placeholder="Phone No"
+                    value="{{ old('phone') }}"
+                    class="w-full bg-white border border-gray-200 rounded-md px-4 py-3 text-sm text-slate-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('phone') border-red-400 @enderror"
+                    required
+                />
+                @error('phone')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
+                <input
+                    type="text"
+                    name="subject"
+                    id="subject"
+                    placeholder="Subject"
+                    value="{{ old('subject') }}"
+                    class="w-full bg-white border border-gray-200 rounded-md px-4 py-3 text-sm text-slate-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('subject') border-red-400 @enderror"
+                    required
+                />
+                @error('subject')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
+        {{-- Row 3: Message --}}
+        <div>
+            <textarea
+                name="message"
+                id="message"
+                rows="6"
+                placeholder="Your Message"
+                class="w-full bg-white border border-gray-200 rounded-md px-4 py-3 text-sm text-slate-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-y @error('message') border-red-400 @enderror"
+                required
+            >{{ old('message') }}</textarea>
+            @error('message')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Success Message --}}
+        @if(session('success'))
+            <div class="bg-green-50 border border-green-200 text-green-700 text-sm rounded-md px-4 py-3">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        {{-- Submit --}}
+        <div>
+            <button
+                type="submit"
+                class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm px-8 py-3 rounded-lg transition-colors duration-200"
+            >
+                Send Message
+            </button>
+        </div>
+
+    </form>
 
 </section>
-{{-- Banbury Madni Masjid — Donation Cards Section --}}
-{{-- Save as: resources/views/components/donation-cards.blade.php --}}
-{{-- Usage: <x-donation-cards /> or @include('components.donation-cards') --}}
 
-<section class="bg-gray-100 py-14 px-4">
 
-    {{-- Header --}}
-    <div class="text-center mb-10">
-        {{-- Mosque Logo --}}
-        <div class="flex justify-center mb-3">
-            <svg class="w-14 h-14 text-blue-700" viewBox="0 0 60 60" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M30 2 C30 2 26 8 26 12 C26 14.2 27.8 16 30 16 C32.2 16 34 14.2 34 12 C34 8 30 2 30 2Z"/>
-                <rect x="27" y="16" width="6" height="4" rx="1"/>
-                <path d="M10 32 C10 24 18 20 30 20 C42 20 50 24 50 32"/>
-                <rect x="6" y="32" width="48" height="4" rx="2"/>
-                <rect x="10" y="36" width="8" height="16" rx="1"/>
-                <rect x="26" y="36" width="8" height="20" rx="1"/>
-                <rect x="42" y="36" width="8" height="16" rx="1"/>
-                <rect x="4" y="52" width="52" height="4" rx="2"/>
-                <rect x="2" y="56" width="56" height="4" rx="2"/>
-                <text x="30" y="13" text-anchor="middle" font-size="5" fill="white" font-weight="bold">BANBURY</text>
-            </svg>
-        </div>
-        <div class="text-xs font-bold tracking-[0.25em] uppercase text-blue-700 mb-1">Banbury Madni Masjid</div>
-        <h2 class="text-4xl font-serif text-slate-800 mt-2">Join Us in Making a Difference</h2>
-    </div>
-
-    {{-- Cards Grid --}}
-    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        {{-- 
-            CARD DATA — Edit or loop from controller/model as needed.
-            Each card has: region, image, title, amount, donate_url
-        --}}
-
-        @php
-        $appeals = [
-            [
-                'region'      => 'Pakistan',
-                'region_color'=> 'bg-blue-500',
-                'image'       => asset('images/appeals/food-pack.jpg'),    // replace with your image path
-                'alt'         => 'Ramadan Food Pack bags',
-                'title'       => 'Ramadan Food Pack',
-                'amount'      => '£50.00',
-                'amount_type' => 'fixed',   // 'fixed' or 'any'
-                'donate_url'  => '/donate/food-pack',
-            ],
-            [
-                'region'      => 'Asia – Africa',
-                'region_color'=> 'bg-blue-500',
-                'image'       => asset('images/appeals/zakat.jpg'),         // replace with your image path
-                'alt'         => 'UK Zakat Distribution',
-                'title'       => 'UK Zakat Distribution',
-                'amount'      => 'Any Amount',
-                'amount_type' => 'any',
-                'donate_url'  => '/donate/zakat',
-            ],
-            [
-                'region'      => 'United Kingdom',
-                'region_color'=> 'bg-blue-500',
-                'image'       => asset('images/appeals/legacy.jpg'),        // replace with your image path
-                'alt'         => 'Legacy For The Future New Build',
-                'title'       => 'Legacy For The Future (New Build/Land)',
-                'amount'      => '£500.00',
-                'amount_type' => 'fixed',
-                'donate_url'  => '/donate/legacy',
-            ],
-        ];
-        @endphp
-
-        @foreach($appeals as $appeal)
-        <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col">
-
-            {{-- Image with region badge --}}
-            <div class="relative">
-                <img
-                    src="{{ $appeal['image'] }}"
-                    alt="{{ $appeal['alt'] }}"
-                    class="w-full h-48 object-cover"
-                    onerror="this.onerror=null;this.src='https://placehold.co/400x200/1e3a5f/white?text={{ urlencode($appeal['title']) }}';"
-                />
-                {{-- Region Badge --}}
-                <span class="absolute top-3 left-3 {{ $appeal['region_color'] }} text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
-                    {{ $appeal['region'] }}
-                </span>
-            </div>
-
-            {{-- Card Body --}}
-            <div class="flex flex-col items-center text-center px-5 py-5 flex-1">
-                <h3 class="text-slate-800 font-bold text-base mb-2 leading-snug">
-                    {{ $appeal['title'] }}
-                </h3>
-
-                <p class="text-blue-600 font-semibold text-base mb-5">
-                    {{ $appeal['amount'] }}
-                </p>
-
-                <a href="{{ $appeal['donate_url'] }}"
-                   class="mt-auto w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm py-3 rounded-lg transition-colors duration-200 text-center block">
-                    Donate Now
-                </a>
-            </div>
-
-        </div>
-        @endforeach
-
-    </div>
-
-</section>
-{{-- Banbury Madni Masjid — Donation Cards Section --}}
-{{-- Save as: resources/views/components/donation-cards.blade.php --}}
-{{-- Usage: <x-donation-cards /> or @include('components.donation-cards') --}}
-
-<section class="bg-gray-100 py-14 px-4">
-
-    {{-- Header --}}
-    <div class="text-center mb-10">
-        {{-- Mosque Logo --}}
-        <div class="flex justify-center mb-3">
-            <svg class="w-14 h-14 text-blue-700" viewBox="0 0 60 60" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M30 2 C30 2 26 8 26 12 C26 14.2 27.8 16 30 16 C32.2 16 34 14.2 34 12 C34 8 30 2 30 2Z"/>
-                <rect x="27" y="16" width="6" height="4" rx="1"/>
-                <path d="M10 32 C10 24 18 20 30 20 C42 20 50 24 50 32"/>
-                <rect x="6" y="32" width="48" height="4" rx="2"/>
-                <rect x="10" y="36" width="8" height="16" rx="1"/>
-                <rect x="26" y="36" width="8" height="20" rx="1"/>
-                <rect x="42" y="36" width="8" height="16" rx="1"/>
-                <rect x="4" y="52" width="52" height="4" rx="2"/>
-                <rect x="2" y="56" width="56" height="4" rx="2"/>
-                <text x="30" y="13" text-anchor="middle" font-size="5" fill="white" font-weight="bold">BANBURY</text>
-            </svg>
-        </div>
-        <div class="text-xs font-bold tracking-[0.25em] uppercase text-blue-700 mb-1">Banbury Madni Masjid</div>
-        <h2 class="text-4xl font-serif text-slate-800 mt-2">Join Us in Making a Difference</h2>
-    </div>
-
-    {{-- Cards Grid --}}
-    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        {{-- 
-            CARD DATA — Edit or loop from controller/model as needed.
-            Each card has: region, image, title, amount, donate_url
-        --}}
-
-        @php
-        $appeals = [
-            [
-                'region'      => 'Pakistan',
-                'region_color'=> 'bg-blue-500',
-                'image'       => asset('images/appeals/food-pack.jpg'),    // replace with your image path
-                'alt'         => 'Ramadan Food Pack bags',
-                'title'       => 'Ramadan Food Pack',
-                'amount'      => '£50.00',
-                'amount_type' => 'fixed',   // 'fixed' or 'any'
-                'donate_url'  => '/donate/food-pack',
-            ],
-            [
-                'region'      => 'Asia – Africa',
-                'region_color'=> 'bg-blue-500',
-                'image'       => asset('images/appeals/zakat.jpg'),         // replace with your image path
-                'alt'         => 'UK Zakat Distribution',
-                'title'       => 'UK Zakat Distribution',
-                'amount'      => 'Any Amount',
-                'amount_type' => 'any',
-                'donate_url'  => '/donate/zakat',
-            ],
-            [
-                'region'      => 'United Kingdom',
-                'region_color'=> 'bg-blue-500',
-                'image'       => asset('images/appeals/legacy.jpg'),        // replace with your image path
-                'alt'         => 'Legacy For The Future New Build',
-                'title'       => 'Legacy For The Future (New Build/Land)',
-                'amount'      => '£500.00',
-                'amount_type' => 'fixed',
-                'donate_url'  => '/donate/legacy',
-            ],
-        ];
-        @endphp
-
-        @foreach($appeals as $appeal)
-        <div class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col">
-
-            {{-- Image with region badge --}}
-            <div class="relative">
-                <img
-                    src="{{ $appeal['image'] }}"
-                    alt="{{ $appeal['alt'] }}"
-                    class="w-full h-48 object-cover"
-                    onerror="this.onerror=null;this.src='https://placehold.co/400x200/1e3a5f/white?text={{ urlencode($appeal['title']) }}';"
-                />
-                {{-- Region Badge --}}
-                <span class="absolute top-3 left-3 {{ $appeal['region_color'] }} text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
-                    {{ $appeal['region'] }}
-                </span>
-            </div>
-
-            {{-- Card Body --}}
-            <div class="flex flex-col items-center text-center px-5 py-5 flex-1">
-                <h3 class="text-slate-800 font-bold text-base mb-2 leading-snug">
-                    {{ $appeal['title'] }}
-                </h3>
-
-                <p class="text-blue-600 font-semibold text-base mb-5">
-                    {{ $appeal['amount'] }}
-                </p>
-
-                <a href="{{ $appeal['donate_url'] }}"
-                   class="mt-auto w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm py-3 rounded-lg transition-colors duration-200 text-center block">
-                    Donate Now
-                </a>
-            </div>
-
-        </div>
-        @endforeach
-
-    </div>
-
-</section>
         <x-Footer />
     </body>
 </html>
