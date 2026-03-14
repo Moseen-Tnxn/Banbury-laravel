@@ -40,7 +40,7 @@
 
     {{-- Form --}}
     <form
-        id="contact-form"
+        id="contact-form contactForm"
         action="{{ route('contact.send') }}"
         method="POST"
         class="space-y-4"
@@ -137,6 +137,7 @@
         <div>
             <button
                 type="submit"
+                id="submitBtn"
                 class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm px-8 py-3 rounded-lg transition-colors duration-200"
             >
                 Send Message
@@ -145,9 +146,118 @@
 
     </form>
 
+    <!-- OTP Modal -->
+<div id="otpModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+    <div class="bg-white p-6 rounded-xl w-96">
+
+        <h2 class="text-lg font-semibold mb-4">OTP Verification</h2>
+
+        <input
+            type="text"
+            id="otp"
+            placeholder="Enter OTP"
+            class="w-full border rounded-md px-4 py-2 mb-4"
+        >
+
+        <div class="flex gap-3">
+
+            <button id="verifyOtp"
+                class="bg-green-600 text-white px-4 py-2 rounded">
+                Verify OTP
+            </button>
+
+            <button id="resendOtp"
+                class="bg-gray-500 text-white px-4 py-2 rounded">
+                Resend OTP
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
 </section>
 
 
         <x-Footer />
     </body>
 </html>
+<script>
+
+let formData = null;
+
+document.getElementById("submitBtn").addEventListener("click", function(){
+
+    let form = document.getElementById("contactForm");
+    formData = new FormData(form);
+
+    fetch("/send-otp", {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.success){
+
+            document.getElementById("otpModal").classList.remove("hidden");
+            document.getElementById("otpModal").classList.add("flex");
+
+        }
+
+    });
+
+});
+
+
+// verify OTP
+
+document.getElementById("verifyOtp").addEventListener("click", function(){
+
+    let otp = document.getElementById("otp").value;
+
+    fetch("/verify-otp", {
+
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json",
+            "X-CSRF-TOKEN":"{{ csrf_token() }}"
+        },
+
+        body:JSON.stringify({
+            otp:otp
+        })
+
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.success){
+
+            fetch("/contact-send",{
+                method:"POST",
+                headers:{
+                    "X-CSRF-TOKEN":"{{ csrf_token() }}"
+                },
+                body:formData
+            })
+
+            alert("Message Sent Successfully");
+
+            location.reload();
+
+        }else{
+
+            alert("Invalid OTP");
+
+        }
+
+    });
+
+});
+
+</script>
