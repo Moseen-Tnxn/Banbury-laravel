@@ -4,9 +4,6 @@
         <div class="lg:ml-10 flex self-justify-end">
             <div class="bg-[#1E73BE] w-20 h-20 rounded-br-3xl rounded-tl-3xl flex flex-col items-center justify-center text-white shadow-lg">
                 <img src="{{ asset('/assets/images/bmm-logo.png') }}" alt="Logo" class="w-14 mb-2">
-                <!-- <h2 class="text-lg font-bold tracking-wide text-center leading-tight">
-                    BANBURY <br> MADNI MASJID
-                </h2> -->
             </div>
         </div>
 
@@ -101,9 +98,12 @@
 
 </header>
 <!-- Mobile Menu -->
-<div id="mobile-menu" class="hidden md:hidden bg-white ">
-
-    <ul class="flex flex-col text-gray-700 font-medium p-6 space-y-4">
+<div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-screen bg-white z-50 flex flex-col justify-center items-center">
+        
+    <button id="close-menu" class="absolute top-6 right-6 text-3xl">
+        ✕
+    </button>
+    <ul class="flex flex-col text-gray-700 font-medium p-6 space-y-4 text-lg text-center">
 
         <li><a href="/" class="block hover:text-[#1E73BE]">Home</a></li>
         <li><a href="/about" class="block hover:text-[#1E73BE]">About Us</a></li>
@@ -128,9 +128,13 @@
 
 const btn = document.getElementById('menu-btn')
 const menu = document.getElementById('mobile-menu')
+const closeBtn = document.getElementById('close-menu')
 
 btn.addEventListener('click', () => {
-    menu.classList.toggle('hidden')
+    menu.classList.remove('hidden')
 })
 
+closeBtn.addEventListener('click', () => {
+    menu.classList.add('hidden')
+})
 </script>
