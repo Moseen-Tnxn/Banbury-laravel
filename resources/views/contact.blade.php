@@ -40,10 +40,10 @@
 
     {{-- Form --}}
     <form
-        id="contact-form contactForm"
+        id="contactForm"
         action="{{ route('contact.send') }}"
         method="POST"
-        class="space-y-4"
+        class="space-y-4 contact-form"
     >
         @csrf
 
@@ -182,12 +182,16 @@
 
         <x-Footer />
     </body>
+
+    
 </html>
 <script>
 
 let formData = null;
 
-document.getElementById("submitBtn").addEventListener("click", function(){
+document.getElementById("submitBtn").addEventListener("click", function(e){
+
+    e.preventDefault();
 
     let form = document.getElementById("contactForm");
     formData = new FormData(form);
@@ -260,4 +264,31 @@ document.getElementById("verifyOtp").addEventListener("click", function(){
 
 });
 
+
+document.getElementById("resendOtp").addEventListener("click", function(){
+
+    if(!formData){
+        alert("Please fill form first");
+        return;
+    }
+
+    fetch("/send-otp", {
+        method: "POST",
+        headers: {
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if(data.success){
+            alert("OTP Resent Successfully");
+        }else{
+            alert("Failed to resend OTP");
+        }
+
+    });
+
+});
 </script>
