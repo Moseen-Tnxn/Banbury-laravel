@@ -1,20 +1,22 @@
 FROM php:8.2-cli
 
-WORKDIR /app
-
-COPY . .
-
+# Install system dependencies + PHP extensions
 RUN apt-get update && apt-get install -y \
-    git unzip curl libzip-dev zip
+    git unzip curl libzip-dev zip libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl bcmath gd
 
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN composer install
+WORKDIR /app
+COPY . .
 
-RUN php artisan key:generate
+# Install Laravel dependencies
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
+# Laravel setup
+RUN php artisan key:generate || true
 RUN chmod -R 777 storage bootstrap/cache
 
 EXPOSE 10000
-
 CMD php -S 0.0.0.0:10000 -t public
