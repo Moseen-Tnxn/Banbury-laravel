@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: banbury-laravel
+    env: docker
+    plan: free
